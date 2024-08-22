@@ -22,3 +22,4 @@ fun AndroidNotesAppTheme(darkTheme: Boolean = true, content: @Composable () -> U
         content = content
     )
 }
+
