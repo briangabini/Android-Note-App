@@ -1,4 +1,4 @@
-package com.bgcoding.notes.app
+package com.bgcoding.notes.app.feature_note.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
