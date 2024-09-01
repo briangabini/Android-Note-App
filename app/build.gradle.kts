@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -71,32 +71,25 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Compose dependencies
-    val lifecycle_version = "2.8.4"
-    val nav_version = "2.7.7"
     // ViewModel utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation("androidx.compose.material:material-icons-extended:1.7.0-beta07")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Dagger - Hilt
-    val hilt = "2.51.1"
-    implementation("com.google.dagger:hilt-android:$hilt")
-//    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03") // deprecated
-//    ksp("com.google.dagger:hilt-compiler:$hilt")
-    ksp("com.google.dagger:hilt-android-compiler:$hilt")
+    implementation(libs.hilt.androidtest)
+    ksp(libs.hilt.android.compiler)
 
     // Room
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation(libs.androidx.room.ktx)
 }
 
 ksp {
