@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
@@ -98,6 +99,16 @@ fun AddEditNoteScreen(
                     }
                 },
                 actions = {
+                    IconButton(
+                        onClick = {
+                            // TODO: implement opening of camera
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.CameraAlt,
+                            contentDescription = "Open camera"
+                        )
+                    }
                     IconButton(
                         onClick = {
                             dropdownMenuExpanded.value = true
