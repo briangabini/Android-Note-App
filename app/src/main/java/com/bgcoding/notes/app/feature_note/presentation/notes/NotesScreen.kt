@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -70,6 +71,18 @@ fun NotesScreen(
                 title = {
                     Text("Notes")
                 },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            // TODO: open nav drawer
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Open Sidebar Menu (Navigation Drawer)"
+                        )
+                    }
+                },
                 actions = {
                     IconButton(
                         onClick = {
@@ -107,8 +120,7 @@ fun NotesScreen(
             ) {
                 OrderSection(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .fillMaxWidth(),
                     noteOrder = state.noteOrder,
                     onOrderChange = {
                         viewModel.onEvent(NotesEvent.Order(it))
