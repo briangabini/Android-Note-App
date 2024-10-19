@@ -135,14 +135,15 @@ fun NotesScreen(
                                     .showSnackbar(
                                         message = "Note deleted",
                                         actionLabel = "Undo",
-                                        duration = SnackbarDuration.Short
+                                        duration = SnackbarDuration.Short,
+                                        withDismissAction = true
                                     )
                                 when (result) {
                                     SnackbarResult.ActionPerformed -> {
                                         viewModel.onEvent(NotesEvent.RestoreNote)
                                     }
                                     SnackbarResult.Dismissed -> {
-                                        // Do nothing
+                                        // do nothing
                                     }
                                 }
                             }
