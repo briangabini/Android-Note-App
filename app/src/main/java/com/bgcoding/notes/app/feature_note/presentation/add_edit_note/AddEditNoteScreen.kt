@@ -38,18 +38,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddEditNoteScreen(
     navController: NavController,
-    noteColor: Int,
+//    noteColor: Int,
     viewModel: AddEditNoteViewModel = hiltViewModel()
 ) {
     val titleState = viewModel.noteTitle.value
     val contentState = viewModel.noteContent.value
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val noteBackgroundAnimatable = remember {
+    /*val noteBackgroundAnimatable = remember {
         Animatable(
             Color(if (noteColor != -1) noteColor else viewModel.noteColor.value)
         )
-    }
+    }*/
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
@@ -83,10 +83,10 @@ fun AddEditNoteScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(noteBackgroundAnimatable.value)
+//                .background(noteBackgroundAnimatable.value)
                 .padding(16.dp)
         ) {
-            Row(
+            /*Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
@@ -120,8 +120,9 @@ fun AddEditNoteScreen(
                             }
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+            }*/
+//            Spacer(modifier = Modifier.height(16.dp))
+
             TransparentHintTextField(
                 text = titleState.text,
                 hint = titleState.hint,

@@ -37,7 +37,7 @@ fun NoteItem(
     onDeleteClick: () -> Unit
 ) {
     Box(modifier = modifier) {
-        Canvas(modifier = Modifier.matchParentSize()) {
+        /*Canvas(modifier = Modifier.matchParentSize()) {
             val clipPath = Path().apply {
                 lineTo(size.width - cutCornerSize.toPx(), 0f)
                 lineTo(size.width, cutCornerSize.toPx()) // lineTo continues from the previous point, and draws a line in between
@@ -61,7 +61,7 @@ fun NoteItem(
                     cornerRadius = CornerRadius(cornerRadius.toPx())
                 )
             }
-        }
+        }*/
         Column(
             modifier = Modifier
                 .fillMaxSize()
