@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.FloatingActionButton
@@ -39,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.NoteItem
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.OrderSection
+import com.bgcoding.notes.app.feature_note.presentation.util.Screen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,7 +55,7 @@ fun NotesScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-
+                navController.navigate(Screen.AddEditNoteScreen.route)
             },
             containerColor = MaterialTheme.colorScheme.primary
             ) {
@@ -82,7 +84,7 @@ fun NotesScreen(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Sort,
+                        imageVector = Icons.AutoMirrored.Filled.Sort,
                         contentDescription = "Sort notes"
                     )
                 }
@@ -110,7 +112,10 @@ fun NotesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                navController.navigate(
+                                    Screen.AddEditNoteScreen.route +
+                                        "?noteId=${note.id}&noteColor=${note.color}"
+                                )
                             },
                         onDeleteClick = {
                             viewModel.onEvent(NotesEvent.DeleteNote(note))
