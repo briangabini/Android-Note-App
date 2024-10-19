@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -86,9 +87,9 @@ fun NotesScreen(
             FloatingActionButton(onClick = {
                 navController.navigate(Screen.AddEditNoteScreen.route)
             },
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add note")
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -98,26 +99,6 @@ fun NotesScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            /*Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Your note",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(NotesEvent.ToggleOrderSection)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "Sort notes"
-                    )
-                }
-            }*/
             AnimatedVisibility(
                 visible = state.isOrderSectionVisible,
                 enter = fadeIn() + slideInVertically(),
@@ -142,8 +123,8 @@ fun NotesScreen(
                             .clickable {
                                 navController.navigate(
                                     Screen.AddEditNoteScreen.route +
-//                                        "?noteId=${note.id}&noteColor=${note.color}"
                                         "?noteId=${note.id}"
+//                                        "?noteId=${note.id}&noteColor=${note.color}"
                                 )
                             },
                         onDeleteClick = {
@@ -165,8 +146,6 @@ fun NotesScreen(
                             }
                         }
                     )
-//                    Spacer(modifier = Modifier.height(16.dp))
-
                     // only display this if the note is not the last one
                     if (state.notes.last() != note)
                         HorizontalDivider(

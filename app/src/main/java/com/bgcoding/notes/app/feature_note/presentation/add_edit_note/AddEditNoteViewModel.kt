@@ -2,7 +2,6 @@ package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,9 +30,6 @@ class AddEditNoteViewModel @Inject constructor(
     ))
     val noteContent: State<NoteTextFieldState> = _noteContent
 
-    /*private val _noteColor = mutableStateOf(Note.noteColors.random().toArgb())
-    val noteColor: State<Int> = _noteColor*/
-
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -53,7 +49,6 @@ class AddEditNoteViewModel @Inject constructor(
                             text = note.content,
                             isHintVisible = false
                         )
-//                        _noteColor.value = note.color
                     }
                 }
             }
@@ -84,18 +79,14 @@ class AddEditNoteViewModel @Inject constructor(
                             _noteContent.value.text.isBlank()
                 )
             }
-            /*is AddEditNoteEvent.ChangeColor -> {
-                _noteColor.value = event.color
-            }*/
             is AddEditNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     try {
                         noteUseCases.addNote(
                             Note(
                                 title = noteTitle.value.text,
-                                content = noteContent.value.text,
+                                content = noteContent.value.text.trimEnd(),
                                 timestamp = System.currentTimeMillis(),
-//                                color = noteColor.value,
                                 id = currentNoteId
                             )
                         )
