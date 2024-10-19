@@ -168,7 +168,11 @@ fun NotesScreen(
 //                    Spacer(modifier = Modifier.height(16.dp))
 
                     // only display this if the note is not the last one
-                    if (state.notes.last() != note) HorizontalDivider(thickness = 1.dp)
+                    if (state.notes.last() != note)
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                        )
                 }
             }
         }
