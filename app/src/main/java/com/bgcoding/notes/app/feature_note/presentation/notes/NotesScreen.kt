@@ -153,7 +153,6 @@ fun NotesScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                // TODO: open nav drawer
                                 scope.launch {
                                     drawerState.open()
                                 }

@@ -10,12 +10,12 @@ class AddNote(
 
     @Throws(IllegalArgumentException::class)
     suspend operator fun invoke(note: Note) {
-        if (note.title.isBlank()) {
+        /*if (note.title.isBlank()) {
             throw InvalidNoteException("Title can't be empty")
         }
         if (note.content.isBlank()) {
             throw InvalidNoteException("Content can't be empty")
-        }
+        }*/
         repository.insertNote(note)
     }
 }
