@@ -144,7 +144,7 @@ fun NotesScreen(
             topBar = {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
@@ -199,7 +199,7 @@ fun NotesScreen(
                     Icon(imageVector = Icons.Filled.Add, contentDescription = "Add note")
                 }
             },
-            snackbarHost = { SnackbarHost(snackbarHostState) }
+            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -220,7 +220,10 @@ fun NotesScreen(
                         }
                     )
                 }
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+                ) {
                     items(state.notes) { note ->
                         NoteItem(
                             note = note,

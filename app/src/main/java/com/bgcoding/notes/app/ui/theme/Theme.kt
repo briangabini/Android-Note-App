@@ -118,7 +118,7 @@ val unspecified_scheme = ColorFamily(
 @Composable
 fun AndroidNotesAppTheme(
     darkTheme: Boolean = false,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
 

@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidNotesAppTheme {
                 Surface(
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     val navController = rememberNavController()
                     NavHost(
