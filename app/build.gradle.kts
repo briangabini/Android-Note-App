@@ -99,6 +99,12 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")
     implementation("androidx.camera:camera-view:$cameraVersion")
     implementation("androidx.camera:camera-extensions:$cameraVersion")
+
+    // ML Kit - Text Recognition v2
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.0")
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.0")
+    implementation("com.google.mlkit:text-recognition-korean:16.0.0")
 }
 
 ksp {
