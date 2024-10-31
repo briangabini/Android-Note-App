@@ -1,5 +1,7 @@
 package com.bgcoding.notes.app.feature_note.presentation
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bgcoding.notes.app.feature_note.presentation.add_edit_note.AddEditNoteScreen
 import com.bgcoding.notes.app.feature_note.presentation.notes.NotesScreen
+import com.bgcoding.notes.app.feature_note.presentation.ocr.CameraScreen
 import com.bgcoding.notes.app.feature_note.presentation.util.Screen
 import com.bgcoding.notes.app.ui.theme.AndroidNotesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +26,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Get user permissions
+        if (!hasRequiredPermissions()) {
+            requestPermissions(CAMERAX_PERMISSIONS, 0)
+        }
+
         setContent {
             AndroidNotesAppTheme {
                 Surface(
@@ -39,9 +49,10 @@ class MainActivity : ComponentActivity() {
                             route = Screen.AddEditNoteScreen.route +
                                     "?noteId={noteId}",
 //                                "?noteId={noteId}&noteColor={noteColor}",
+                            // These arguments will be passed to the SavedStateHandle automatically
                             arguments = listOf(
                                 navArgument(
-                                    name = "noteId"
+                                    name = "noteId"         // the one enclosed in {} is the argument name
                                 ) {
                                     type = NavType.IntType
                                     defaultValue = -1
@@ -52,9 +63,30 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                             )
                         }
+                        composable(route = Screen.CameraScreen.route) {
+                            CameraScreen(navController = navController)
+                        }
                     }
                 }
             }
+
+
         }
+    }
+
+    private fun hasRequiredPermissions(): Boolean {
+        return CAMERAX_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    companion object {
+        private val CAMERAX_PERMISSIONS = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
     }
 }

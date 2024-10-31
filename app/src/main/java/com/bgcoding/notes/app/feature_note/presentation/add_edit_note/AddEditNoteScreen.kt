@@ -101,7 +101,7 @@ fun AddEditNoteScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            // TODO: implement opening of camera
+                            navController.navigate("camera_screen")
                         }
                     ) {
                         Icon(
