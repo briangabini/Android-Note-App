@@ -5,7 +5,7 @@ import com.bgcoding.notes.app.feature_note.domain.model.Note
 import com.bgcoding.notes.app.feature_note.domain.repository.NoteRepository
 
 class AddNote(
-    private val repository: NoteRepository
+private val repository: NoteRepository
 ) {
 
     @Throws(IllegalArgumentException::class)

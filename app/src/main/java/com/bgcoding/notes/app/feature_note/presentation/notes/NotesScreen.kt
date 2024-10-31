@@ -77,7 +77,7 @@ fun NotesScreen(
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()    // scoped to the composable
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -157,7 +157,6 @@ fun NotesScreen(
                                     drawerState.open()
                                 }
                             },
-
                             ) {
                             Icon(
                                 imageVector = Icons.Filled.Menu,
