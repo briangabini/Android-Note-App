@@ -1,5 +1,6 @@
 package com.bgcoding.notes.app.feature_note.presentation.notes
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -53,8 +54,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,6 +81,13 @@ fun NotesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()    // scoped to the composable
+
+    // Log recompositions
+    val currentState = rememberUpdatedState(state)
+    DisposableEffect(currentState) {
+        Log.d("NotesScreen", "Recomposed with state: $currentState")
+        onDispose { }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -224,6 +234,11 @@ fun NotesScreen(
                     .background(MaterialTheme.colorScheme.surface)
                 ) {
                     items(state.notes) { note ->
+                        DisposableEffect(Unit) {
+                            Log.d("LazyColumn", "LazyColumn recomposed")
+                            onDispose {}
+                        }
+
                         NoteItem(
                             note = note,
                             modifier = Modifier
@@ -235,6 +250,7 @@ fun NotesScreen(
 //                                        "?noteId=${note.id}&noteColor=${note.color}"
                                     )
                                 },
+                            // TODO: Carl help why does it not recompose, when deleting a note
                             onDeleteClick = {
                                 viewModel.onEvent(NotesEvent.DeleteNote(note))
                                 scope.launch {
