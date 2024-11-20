@@ -2,12 +2,18 @@ package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -18,6 +24,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +38,9 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -43,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,6 +77,7 @@ fun AddEditNoteScreen(
     val dropdownMenuExpanded = remember { mutableStateOf(false) }
 
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val showDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -84,6 +96,72 @@ fun AddEditNoteScreen(
         onDispose {
             if (!viewModel.deleted.value) {
                 viewModel.onEvent(AddEditNoteEvent.SaveNote)
+            }
+        }
+    }
+
+    if (showDialog.value) {
+        BasicAlertDialog(
+            onDismissRequest = { showDialog.value = false }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(16.dp),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Text(
+                        text = "Delete Note",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Text(
+                        text = "Are you sure you want to delete this note?",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 16.dp
+                            ),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = {
+                                showDialog.value = false
+                                dropdownMenuExpanded.value = false
+                            }
+                        ) {
+                            Text(
+                                "Cancel",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        TextButton(
+                            onClick = {
+                                viewModel.onEvent(AddEditNoteEvent.DeleteNote)
+                                showDialog.value = false
+                                dropdownMenuExpanded.value = false
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Text(
+                                "Delete",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -173,9 +251,8 @@ fun AddEditNoteScreen(
                             },
                             onClick = {
                                 // close dropdown
-                                viewModel.onEvent(AddEditNoteEvent.DeleteNote)
-                                dropdownMenuExpanded.value = false
-                                navController.navigateUp()
+                                showDialog.value = true
+//                                dropdownMenuExpanded.value = false
                             }
                         )
                     }
