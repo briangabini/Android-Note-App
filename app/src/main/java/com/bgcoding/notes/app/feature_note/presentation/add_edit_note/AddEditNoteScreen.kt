@@ -82,7 +82,9 @@ fun AddEditNoteScreen(
     // Handle quit app
     DisposableEffect(Unit) {
         onDispose {
-            viewModel.onEvent(AddEditNoteEvent.SaveNote)
+            if (!viewModel.deleted.value) {
+                viewModel.onEvent(AddEditNoteEvent.SaveNote)
+            }
         }
     }
 
@@ -171,7 +173,9 @@ fun AddEditNoteScreen(
                             },
                             onClick = {
                                 // close dropdown
+                                viewModel.onEvent(AddEditNoteEvent.DeleteNote)
                                 dropdownMenuExpanded.value = false
+                                navController.navigateUp()
                             }
                         )
                     }

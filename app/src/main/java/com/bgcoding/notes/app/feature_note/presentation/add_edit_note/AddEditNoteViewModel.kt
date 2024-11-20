@@ -37,6 +37,9 @@ class AddEditNoteViewModel @Inject constructor(
 
     private var currentNoteId: Int? = null
 
+    private var _deleted = mutableStateOf(false)
+    val deleted: State<Boolean> = _deleted
+
     init {
         savedStateHandle.get<Int>("noteId")?.let { noteId ->
             if(noteId != -1) {
@@ -108,6 +111,19 @@ class AddEditNoteViewModel @Inject constructor(
                     clipboardManager.setText(AnnotatedString(_noteContent.value.text))
                     // notify user
                     _eventFlow.emit(UiEvent.ShowSnackbar("Content copied to clipboard"))
+                }
+            }
+            is AddEditNoteEvent.DeleteNote -> {
+                viewModelScope.launch {
+                    noteUseCases.deleteNote(
+                        Note(
+                            title = noteTitle.value.text,
+                            content = noteContent.value.text.trimEnd(),
+                            timestamp = System.currentTimeMillis(),
+                            id = currentNoteId
+                        )
+                    )
+                    _deleted.value = true
                 }
             }
         }
