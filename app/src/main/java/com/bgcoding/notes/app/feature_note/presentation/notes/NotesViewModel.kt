@@ -1,5 +1,6 @@
 package com.bgcoding.notes.app.feature_note.presentation.notes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -67,6 +68,7 @@ class NotesViewModel @Inject constructor(
         getNotesJob?.cancel()
         getNotesJob = noteUseCases.getNotes(noteOrder)
             .onEach { notes ->
+                Log.d("NotesViewModel", "Notes emitted: ${notes.size} notes")
                 _state.value = state.value.copy(
                     notes = notes,
                     noteOrder = noteOrder

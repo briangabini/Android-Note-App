@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface NoteDao {
 
     @Query("SELECT * FROM note")
-    fun getNotes(): Flow<List<Note>> // flow is async, so we don't need to use suspend
+    fun getNotes(): Flow<List<Note>> // flow is async, so we don't need to use suspend // reactive data stream when using with Room
 
     @Query("SELECT * FROM note WHERE id = :id") // https://developer.android.com/training/data-storage/room/accessing-data
     suspend fun getNoteById(id: Int): Note?

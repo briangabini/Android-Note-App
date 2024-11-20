@@ -25,7 +25,6 @@ import com.bgcoding.notes.app.feature_note.domain.model.Note
 fun NoteItem(
     note: Note,
     modifier: Modifier = Modifier,
-    onDeleteClick: () -> Unit
 ) {
     Box(modifier = modifier) {
         Column(
@@ -47,16 +46,6 @@ fun NoteItem(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 3,
-            )
-        }
-        IconButton(
-            onClick = onDeleteClick,
-            modifier = Modifier.align(Alignment.CenterEnd)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete note",
-                modifier = Modifier.size(18.dp)
             )
         }
     }
