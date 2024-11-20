@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,6 +74,13 @@ fun AddEditNoteScreen(
                     navController.navigateUp()
                 }
             }
+        }
+    }
+
+    // Handle quit app
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onEvent(AddEditNoteEvent.SaveNote)
         }
     }
 
@@ -157,16 +165,6 @@ fun AddEditNoteScreen(
                     }
                 }
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                },
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Icon(imageVector = Icons.Filled.Save, contentDescription = "Save note")
-            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->

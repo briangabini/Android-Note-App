@@ -11,11 +11,9 @@ private val repository: NoteRepository
     @Throws(IllegalArgumentException::class)
     suspend operator fun invoke(note: Note) {
         if (note.title.isBlank()) {
-            throw InvalidNoteException("Title can't be empty")
+            note.title = "Untitled"
         }
-        if (note.content.isBlank()) {
-            throw InvalidNoteException("Content can't be empty")
-        }
+
         repository.insertNote(note)
     }
 }

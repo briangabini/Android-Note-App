@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bgcoding.notes.app.feature_note.domain.model.InvalidNoteException
 import com.bgcoding.notes.app.feature_note.domain.model.Note
 import com.bgcoding.notes.app.feature_note.domain.use_case.NoteUseCases
 import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder

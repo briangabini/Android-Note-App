@@ -237,7 +237,7 @@ fun NotesScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    items(state.notes) { note ->
+                    items(state.notes, key = { it.id!! }) { note ->
                         /*DisposableEffect(Unit) {
                             Log.d("LazyColumn", "LazyColumn recomposed")
                             onDispose {}
