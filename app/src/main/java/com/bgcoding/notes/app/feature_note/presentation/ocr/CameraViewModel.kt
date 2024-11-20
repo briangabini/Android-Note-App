@@ -3,6 +3,7 @@ package com.bgcoding.notes.app.feature_note.presentation.ocr
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -21,6 +22,12 @@ class CameraViewModel @Inject constructor(
     private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
     val bitmaps = _bitmaps.asStateFlow()
 
+    private val _recognizedText = MutableStateFlow("")
+    val recognizedText = _recognizedText.asStateFlow()
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog = _showDialog.asStateFlow()
+
     fun onTakePhoto(bitmap: Bitmap) {
         _bitmaps.value += bitmap
         recognizeText(bitmap)
@@ -32,19 +39,24 @@ class CameraViewModel @Inject constructor(
 
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
-                // Task completed successfully
-                /*for (block in visionText.textBlocks) {
-                    val blockText = block.text
-                    Log.d("TextRecognition", "Recognized text: $blockText")
-                }*/
-
                 val recognizedText = visionText.textBlocks.joinToString(separator = "\n") { it.text }
+                _recognizedText.value = recognizedText
+                if (recognizedText.isEmpty()) {
+                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
+                } else {
+                    _showDialog.value = true
+                }
+
                 Log.d("TextRecognition", "Recognized text: $recognizedText")
             }
             .addOnFailureListener { e ->
                 // Task failed with an exception
                 Log.e("TextRecognition", "Text recognition failed", e)
             }
+    }
+
+    fun dismissDialog() {
+        _showDialog.value = false
     }
 
     fun getContext(): Context = context
