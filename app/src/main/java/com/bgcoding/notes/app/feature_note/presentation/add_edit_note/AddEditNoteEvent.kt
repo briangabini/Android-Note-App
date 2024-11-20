@@ -1,6 +1,7 @@
 package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.platform.ClipboardManager
 
 // for every single ui action, we create an event
 sealed class AddEditNoteEvent {
@@ -8,6 +9,6 @@ sealed class AddEditNoteEvent {
     data class ChangeTitleFocus(val focusState: FocusState): AddEditNoteEvent()
     data class EnteredContent(val value: String): AddEditNoteEvent()
     data class ChangeContentFocus(val focusState: FocusState): AddEditNoteEvent()
-//    data class ChangeColor(val color: Int): AddEditNoteEvent()
     data object SaveNote: AddEditNoteEvent()
+    data class CopyContent(val clipboardManager: ClipboardManager): AddEditNoteEvent()
 }

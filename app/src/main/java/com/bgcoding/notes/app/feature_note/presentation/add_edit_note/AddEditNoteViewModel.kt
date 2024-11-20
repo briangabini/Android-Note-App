@@ -1,7 +1,9 @@
 package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
     private val noteUseCases: NoteUseCases,
-    savedStateHandle: SavedStateHandle          // this is used to get the noteId from the navigation, injected by hilt
+    savedStateHandle: SavedStateHandle,          // this is used to get the noteId from the navigation, injected by hilt
 ) : ViewModel() {
 
     private val _noteTitle = mutableStateOf(NoteTextFieldState(
@@ -90,7 +92,6 @@ class AddEditNoteViewModel @Inject constructor(
                                 id = currentNoteId
                             )
                         )
-                        _eventFlow.emit(UiEvent.SaveNote)
                     } catch(e: InvalidNoteException) {
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
@@ -100,11 +101,19 @@ class AddEditNoteViewModel @Inject constructor(
                     }
                 }
             }
+            is AddEditNoteEvent.CopyContent -> {
+                viewModelScope.launch {
+                    // copy content to clipboard
+                    val clipboardManager = event.clipboardManager
+                    clipboardManager.setText(AnnotatedString(_noteContent.value.text))
+                    // notify user
+                    _eventFlow.emit(UiEvent.ShowSnackbar("Content copied to clipboard"))
+                }
+            }
         }
     }
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String): UiEvent()
-        object SaveNote: UiEvent()
     }
 }

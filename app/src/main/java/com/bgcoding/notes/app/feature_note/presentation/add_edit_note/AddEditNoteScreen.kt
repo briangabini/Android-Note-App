@@ -1,6 +1,7 @@
 package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,6 +40,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -62,6 +65,8 @@ fun AddEditNoteScreen(
     val scope = rememberCoroutineScope()
     val dropdownMenuExpanded = remember { mutableStateOf(false) }
 
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
@@ -69,9 +74,6 @@ fun AddEditNoteScreen(
                     snackbarHostState.showSnackbar(
                         message = event.message
                     )
-                }
-                is AddEditNoteViewModel.UiEvent.SaveNote -> {
-                    navController.navigateUp()
                 }
             }
         }
@@ -139,7 +141,11 @@ fun AddEditNoteScreen(
                                     contentDescription = "Copy note"
                                 )
                             },
-                            onClick = {}                                    // TODO: implement copy content to clipboard
+                            onClick = {
+                                viewModel.onEvent(AddEditNoteEvent.CopyContent(clipboardManager))
+                                // close dropdown
+                                dropdownMenuExpanded.value = false
+                            }
                         )
                         DropdownMenuItem(
                             text = { Text("Share") },
@@ -149,7 +155,10 @@ fun AddEditNoteScreen(
                                     contentDescription = "Copy note"
                                 )
                             },
-                            onClick = {}                                    // TODO: implement share content
+                            onClick = {
+                                // close dropdown
+                                dropdownMenuExpanded.value = false
+                            }                                    // TODO: implement share content
                         )
                         HorizontalDivider(thickness = 1.dp)
                         DropdownMenuItem(
@@ -160,7 +169,10 @@ fun AddEditNoteScreen(
                                     contentDescription = "Copy note"
                                 )
                             },
-                            onClick = {}                                    // TODO: implement delete note
+                            onClick = {
+                                // close dropdown
+                                dropdownMenuExpanded.value = false
+                            }
                         )
                     }
                 }
