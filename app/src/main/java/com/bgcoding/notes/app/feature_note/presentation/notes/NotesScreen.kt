@@ -276,12 +276,15 @@ fun NotesScreen(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(Color.Red)
-                                        .padding(horizontal = 20.dp)
-                                    ,
+                                        .background(MaterialTheme.colorScheme.error)
+                                        .padding(horizontal = 20.dp),
                                     contentAlignment = Alignment.CenterEnd
                                 ) {
-                                    Text(text = "Delete")
+                                    Text(
+                                        text = "Delete",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onError
+                                    )
                                 }
                             }
                         ) {

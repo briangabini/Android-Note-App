@@ -111,7 +111,10 @@ fun CameraScreen(
                             .verticalScroll(rememberScrollState(), enabled = true)
                             .weight(1f)
                     ) {
-                        Text(recognizedText)
+                        Text(
+                            recognizedText,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
