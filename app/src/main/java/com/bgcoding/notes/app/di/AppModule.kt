@@ -10,6 +10,7 @@ import com.bgcoding.notes.app.feature_note.domain.use_case.DeleteNote
 import com.bgcoding.notes.app.feature_note.domain.use_case.GetNote
 import com.bgcoding.notes.app.feature_note.domain.use_case.GetNotes
 import com.bgcoding.notes.app.feature_note.domain.use_case.NoteUseCases
+import com.bgcoding.notes.app.feature_note.domain.use_case.SearchNotes
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,7 +49,8 @@ object AppModule {
             getNotes = GetNotes(repository),
             deleteNote = DeleteNote(repository),
             addNote = AddNote(repository),
-            getNote = GetNote(repository)
+            getNote = GetNote(repository),
+            searchNotes = SearchNotes(repository)
         )
     }
 }

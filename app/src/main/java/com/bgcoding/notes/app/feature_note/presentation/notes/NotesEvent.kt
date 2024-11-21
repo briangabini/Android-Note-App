@@ -6,6 +6,7 @@ import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder
 sealed class NotesEvent {
     data class Order(val noteOrder: NoteOrder): NotesEvent()
     data class DeleteNote(val note: Note): NotesEvent()
+    data class SearchNotes(val query: String): NotesEvent()
     data object RestoreNote: NotesEvent()
     data object ToggleOrderSection: NotesEvent()
 }

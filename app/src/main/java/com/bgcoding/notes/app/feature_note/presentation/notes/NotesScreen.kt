@@ -50,14 +50,18 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,6 +85,8 @@ fun NotesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()    // scoped to the composable
+    val searchQuery = remember { mutableStateOf("") }
+    var showSearch by remember { mutableStateOf(false) }
 
     // Log recompositions
     val currentState = rememberUpdatedState(state)
@@ -188,13 +194,25 @@ fun NotesScreen(
                         }
                         IconButton(
                             onClick = {
-                                // TODO: implement search functionality
+                                showSearch = !showSearch
                             }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Search,
                                 contentDescription = "Search notes"
                             )
+                        }
+                        if (showSearch){
+                            Column {
+                                TextField(
+                                    value = searchQuery.value,
+                                    onValueChange = { query ->
+                                        searchQuery.value = query
+                                        viewModel.onEvent(NotesEvent.SearchNotes(query))
+                                    },
+                                    label = { Text("Search Notes") }
+                                )
+                            }
                         }
                     },
                 )

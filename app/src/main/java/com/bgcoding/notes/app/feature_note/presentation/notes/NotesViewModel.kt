@@ -23,6 +23,7 @@ class NotesViewModel @Inject constructor(
     private val _state = mutableStateOf(NotesState())
     val state: State<NotesState> = _state
 
+
     private var recentlyDeletedNote: Note? = null
 
     // use a coroutine job so that we can cancel it when needed
@@ -47,11 +48,16 @@ class NotesViewModel @Inject constructor(
                     recentlyDeletedNote = event.note
                 }
             }
+            is NotesEvent.SearchNotes -> {
+                searchNotes(event.query)
+            }
             is NotesEvent.RestoreNote -> {
                 viewModelScope.launch {
                     noteUseCases.addNote(
+
                         recentlyDeletedNote ?: return@launch
                     )
+
                     recentlyDeletedNote = null
                 }
             }
@@ -61,6 +67,17 @@ class NotesViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun searchNotes(query: String) {
+        getNotesJob?.cancel()
+        getNotesJob = noteUseCases.searchNotes(query)
+            .onEach { notes ->
+                _state.value = state.value.copy(
+                    notes = notes
+                )
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun getNotes(noteOrder: NoteOrder) {
