@@ -8,10 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.bgcoding.notes.app.feature_note.domain.model.InvalidNoteException
 import com.bgcoding.notes.app.feature_note.domain.model.Note
 import com.bgcoding.notes.app.feature_note.domain.use_case.NoteUseCases
+import com.bgcoding.notes.app.feature_note.domain.use_case.RetrieveMode
 import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder
 import com.bgcoding.notes.app.feature_note.domain.util.OrderType
+import com.bgcoding.notes.app.feature_note.presentation.add_edit_note.AddEditNoteViewModel.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -19,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
-    private val noteUseCases: NoteUseCases
+    private val noteUseCases: NoteUseCases,
 ) : ViewModel() {
 
     private val _state = mutableStateOf(NotesState())
@@ -30,9 +35,9 @@ class NotesViewModel @Inject constructor(
     // use a coroutine job so that we can cancel it when needed
     private var getNotesJob: Job? = null
 
-    init {
+    /*init {
         getNotes(NoteOrder.Date(OrderType.Descending))
-    }
+    }*/
 
     fun onEvent(event: NotesEvent) {
         when(event) {
@@ -45,14 +50,14 @@ class NotesViewModel @Inject constructor(
             }
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
-                    noteUseCases.deleteNote(event.note)
+                    noteUseCases.addNote(event.note.copy(deleted = true))
                     recentlyDeletedNote = event.note
                 }
             }
             is NotesEvent.RestoreNote -> {
                 viewModelScope.launch {
                     noteUseCases.addNote(
-                        recentlyDeletedNote ?: return@launch
+                        recentlyDeletedNote?.copy(deleted = false) ?: return@launch
                     )
                     recentlyDeletedNote = null
                 }
@@ -62,18 +67,38 @@ class NotesViewModel @Inject constructor(
                     isOrderSectionVisible = !state.value.isOrderSectionVisible
                 )
             }
+            is NotesEvent.SetShowDeleted -> {
+                _state.value = state.value.copy(showDeleted = event.showDeleted)
+                Log.d("NotesViewModel", "SetShowDeleted executed")
+                Log.d("NotesViewModel", "from event showDeleted: ${event.showDeleted}")
+                Log.d("NotesViewModel", "from state showDeleted: ${_state.value.showDeleted}")
+                getNotes(state.value.noteOrder)
+            }
+            is NotesEvent.DeleteAllNotesPermanently -> {
+                viewModelScope.launch {
+                    noteUseCases.deleteAllNotesPermanently()
+                }
+            }
         }
     }
 
     private fun getNotes(noteOrder: NoteOrder) {
         getNotesJob?.cancel()
-        getNotesJob = noteUseCases.getNotes(noteOrder)
-            .onEach { notes ->
-                Log.d("NotesViewModel", "Notes emitted: ${notes.size} notes")
-                _state.value = state.value.copy(
-                    notes = notes,
-                    noteOrder = noteOrder
-                )
-            }
-            .launchIn(viewModelScope) }
+        Log.d("NotesViewModel", "getNotes Executed")
+        Log.d("NotesViewModel", "from state showDeleted: ${_state.value.showDeleted}")
+        val retrieveMode = if (_state.value.showDeleted) {
+            RetrieveMode.ShowDeleted
+        } else {
+            RetrieveMode.ShowNonDeleted
+        }
+        Log.d("NotesViewModel", "getNotes called")
+        Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
+
+        getNotesJob = noteUseCases.getNotes(noteOrder, retrieveMode).onEach { notes ->
+            _state.value = state.value.copy(notes = notes, noteOrder = noteOrder)
+            Log.d("NotesViewModel", "getNotesJob executed")
+            Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
+            Log.d("NotesViewModel", "notes: $notes")
+        }.launchIn(viewModelScope)
+    }
 }

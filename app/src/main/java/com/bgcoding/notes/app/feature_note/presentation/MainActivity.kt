@@ -66,6 +66,19 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.CameraScreen.route) {
                             CameraScreen(navController = navController)
                         }
+                        composable(
+                            route = Screen.NotesScreen.route + "?showDeleted={showDeleted}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "showDeleted"
+                                ) {
+                                    type = NavType.BoolType
+                                    defaultValue = false
+                                }
+                            )
+                        ) {
+                            NotesScreen(navController = navController)
+                        }
                     }
                 }
             }

@@ -54,6 +54,7 @@ class AddEditNoteViewModel @Inject constructor(
                             text = note.content,
                             isHintVisible = false
                         )
+                        _deleted.value = note.deleted
                     }
                 }
             }
@@ -114,16 +115,31 @@ class AddEditNoteViewModel @Inject constructor(
                 }
             }
             is AddEditNoteEvent.DeleteNote -> {
+                if (currentNoteId == null) return
+
                 viewModelScope.launch {
-                    noteUseCases.deleteNote(
-                        Note(
-                            title = noteTitle.value.text,
-                            content = noteContent.value.text.trimEnd(),
-                            timestamp = System.currentTimeMillis(),
-                            id = currentNoteId
+                    if (_deleted.value) {
+                        noteUseCases.deleteNote(
+                            Note(
+                                title = noteTitle.value.text,
+                                content = noteContent.value.text.trimEnd(),
+                                timestamp = System.currentTimeMillis(),
+                                id = currentNoteId,
+                                deleted = true
+                            )
                         )
-                    )
-                    _deleted.value = true
+                    } else {
+                        noteUseCases.addNote(
+                            Note(
+                                title = noteTitle.value.text,
+                                content = noteContent.value.text.trimEnd(),
+                                timestamp = System.currentTimeMillis(),
+                                id = currentNoteId,
+                                deleted = true
+                            )
+                        )
+                        _deleted.value = true
+                    }
                 }
             }
         }

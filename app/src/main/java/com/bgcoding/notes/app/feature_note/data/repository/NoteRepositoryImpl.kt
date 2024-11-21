@@ -23,4 +23,8 @@ class NoteRepositoryImpl(
     override suspend fun deleteNote(note: Note) {
         dao.deleteNote(note)
     }
+
+    override suspend fun deletedAllNotesPermanently() {
+        dao.deletedAllNotesPermanently()
+    }
 }
