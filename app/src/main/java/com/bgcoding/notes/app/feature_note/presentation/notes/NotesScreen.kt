@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,10 +50,13 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -233,45 +237,72 @@ fun NotesScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    items(state.notes) { note ->
-                        DisposableEffect(Unit) {
+                    items(state.notes, key = { it.id!! }) { note ->
+                        /*DisposableEffect(Unit) {
                             Log.d("LazyColumn", "LazyColumn recomposed")
                             onDispose {}
-                        }
-
-                        NoteItem(
-                            note = note,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate(
-                                        Screen.AddEditNoteScreen.route +
-                                                "?noteId=${note.id}"
-//                                        "?noteId=${note.id}&noteColor=${note.color}"
-                                    )
-                                },
-                            // TODO: Carl help why does it not recompose, when deleting a note
-                            onDeleteClick = {
-                                viewModel.onEvent(NotesEvent.DeleteNote(note))
-                                scope.launch {
-                                    val result = snackbarHostState
-                                        .showSnackbar(
-                                            message = "Note deleted",
-                                            actionLabel = "Undo",
-                                            duration = SnackbarDuration.Short,
-                                            withDismissAction = true
-                                        )
-                                    when (result) {
-                                        SnackbarResult.ActionPerformed -> {
-                                            viewModel.onEvent(NotesEvent.RestoreNote)
-                                        }
-                                        SnackbarResult.Dismissed -> {
-                                            // do nothing
+                        }*/
+                        val dismissState = rememberSwipeToDismissBoxState(
+                            confirmValueChange = {
+                                if (it == SwipeToDismissBoxValue.EndToStart) {
+                                    viewModel.onEvent(NotesEvent.DeleteNote(note))
+                                    scope.launch {
+                                        val result = snackbarHostState
+                                            .showSnackbar(
+                                                message = "Note deleted",
+                                                actionLabel = "Undo",
+                                                duration = SnackbarDuration.Short,
+                                                withDismissAction = true
+                                            )
+                                        when (result) {
+                                            SnackbarResult.ActionPerformed -> {
+                                                viewModel.onEvent(NotesEvent.RestoreNote)
+                                            }
+                                            SnackbarResult.Dismissed -> {
+                                                // do nothing
+                                            }
                                         }
                                     }
+                                    true
+                                } else {
+                                    false
                                 }
                             }
                         )
+
+                        SwipeToDismissBox(
+                            state = dismissState,
+                            backgroundContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.error)
+                                        .padding(horizontal = 20.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Text(
+                                        text = "Delete",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onError
+                                    )
+                                }
+                            }
+                        ) {
+                            NoteItem(
+                                note = note,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .clickable {
+                                        navController.navigate(
+                                            Screen.AddEditNoteScreen.route +
+                                                    "?noteId=${note.id}"
+//                                        "?noteId=${note.id}&noteColor=${note.color}"
+                                        )
+                                    }
+                            )
+                        }
+
                         // only display this if the note is not the last one
                         if (state.notes.last() != note)
                             HorizontalDivider(
