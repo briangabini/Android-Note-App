@@ -6,7 +6,7 @@ import com.bgcoding.notes.app.feature_note.domain.model.Note
 
 @Database(
     entities = [Note::class],
-    version = 2,
+    version = 1,
     exportSchema = true
 )
 abstract class NoteDatabase: RoomDatabase() {

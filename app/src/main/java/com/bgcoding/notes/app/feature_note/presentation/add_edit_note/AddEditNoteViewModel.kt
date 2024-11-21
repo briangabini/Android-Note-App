@@ -54,6 +54,7 @@ class AddEditNoteViewModel @Inject constructor(
                             text = note.content,
                             isHintVisible = false
                         )
+                        _deleted.value = note.deleted
                     }
                 }
             }
@@ -114,16 +115,47 @@ class AddEditNoteViewModel @Inject constructor(
                 }
             }
             is AddEditNoteEvent.DeleteNote -> {
+                if (currentNoteId == null) return
+
                 viewModelScope.launch {
-                    noteUseCases.deleteNote(
+                    if (_deleted.value) {
+                        noteUseCases.deleteNote(
+                            Note(
+                                title = noteTitle.value.text,
+                                content = noteContent.value.text.trimEnd(),
+                                timestamp = System.currentTimeMillis(),
+                                id = currentNoteId,
+                                deleted = true
+                            )
+                        )
+                    } else {
+                        noteUseCases.addNote(
+                            Note(
+                                title = noteTitle.value.text,
+                                content = noteContent.value.text.trimEnd(),
+                                timestamp = System.currentTimeMillis(),
+                                id = currentNoteId,
+                                deleted = true
+                            )
+                        )
+                        _deleted.value = true
+                    }
+                }
+            }
+            is AddEditNoteEvent.RestoreNote -> {
+                if (currentNoteId == null) return
+
+                viewModelScope.launch {
+                    noteUseCases.addNote(
                         Note(
                             title = noteTitle.value.text,
                             content = noteContent.value.text.trimEnd(),
                             timestamp = System.currentTimeMillis(),
-                            id = currentNoteId
+                            id = currentNoteId,
+                            deleted = false
                         )
                     )
-                    _deleted.value = true
+                    _deleted.value = false
                 }
             }
         }

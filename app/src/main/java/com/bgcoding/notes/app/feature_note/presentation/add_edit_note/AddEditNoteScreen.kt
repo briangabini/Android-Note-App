@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.RestoreFromTrash
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialogDefaults
@@ -50,11 +51,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -79,7 +82,10 @@ fun AddEditNoteScreen(
     val dropdownMenuExpanded = remember { mutableStateOf(false) }
 
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
-    val showDialog = remember { mutableStateOf(false) }
+
+    // for dialogs
+    val showDeleteNoteDialog = remember { mutableStateOf(false) }
+    val showRestoreNoteDialog = remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -104,9 +110,9 @@ fun AddEditNoteScreen(
         }
     }
 
-    if (showDialog.value) {
+    if (showRestoreNoteDialog.value) {
         BasicAlertDialog(
-            onDismissRequest = { showDialog.value = false }
+            onDismissRequest = { showRestoreNoteDialog.value = false }
         ) {
             Surface(
                 modifier = Modifier
@@ -118,14 +124,16 @@ fun AddEditNoteScreen(
                     modifier = Modifier.wrapContentSize()
                 ) {
                     Text(
-                        text = "Delete Note",
+                        text = "Restore Note",
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+                        textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "Are you sure you want to delete this note?",
+                        text = "Are you sure you want to restore this note?",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
@@ -136,24 +144,112 @@ fun AddEditNoteScreen(
                                 end = 16.dp,
                                 bottom = 16.dp
                             ),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         TextButton(
                             onClick = {
-                                showDialog.value = false
+                                showRestoreNoteDialog.value = false
                                 dropdownMenuExpanded.value = false
                             }
                         ) {
                             Text(
                                 "Cancel",
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        TextButton(
+                            onClick = {
+                                viewModel.onEvent(AddEditNoteEvent.RestoreNote)
+                                showRestoreNoteDialog.value = false
+                                dropdownMenuExpanded.value = false
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Text(
+                                "Restore",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    if (showDeleteNoteDialog.value) {
+        BasicAlertDialog(
+            onDismissRequest = { showDeleteNoteDialog.value = false }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(16.dp),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    if (viewModel.deleted.value) {
+                        Text(
+                            text = "Delete Note",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "Are you sure you want to delete this note?",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Text(
+                            text = "Move to Trash?",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "Are you sure you want to move this note to trash?",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                ),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                        TextButton(
+                            onClick = {
+                                showDeleteNoteDialog.value = false
+                                dropdownMenuExpanded.value = false
+                            }
+                        ) {
+                            Text(
+                                "Cancel",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.Center
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         TextButton(
                             onClick = {
                                 viewModel.onEvent(AddEditNoteEvent.DeleteNote)
-                                showDialog.value = false
+                                showDeleteNoteDialog.value = false
                                 dropdownMenuExpanded.value = false
                                 navController.navigateUp()
                             }
@@ -164,6 +260,7 @@ fun AddEditNoteScreen(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
+
                     }
                 }
             }
@@ -195,13 +292,14 @@ fun AddEditNoteScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate("camera_screen")
+                            if (!viewModel.deleted.value) navController.navigate("camera_screen")
                         }
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = "Open camera"
-                        )
+                        if (!viewModel.deleted.value)
+                            Icon(
+                                imageVector = Icons.Filled.CameraAlt,
+                                contentDescription = "Open camera"
+                            )
                     }
                     IconButton(
                         onClick = {
@@ -252,6 +350,22 @@ fun AddEditNoteScreen(
                             }
                         )
                         HorizontalDivider(thickness = 1.dp)
+                        if (viewModel.deleted.value) {
+                            DropdownMenuItem(
+                                text = { Text("Restore") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.RestoreFromTrash,
+                                        contentDescription = "Restore Note"
+                                    )
+                                },
+                                onClick = {
+                                    showRestoreNoteDialog.value = true
+                                    // close dropdown
+                                    dropdownMenuExpanded.value = false
+                                }
+                            )
+                        }
                         DropdownMenuItem(
                             text = { Text("Delete") },
                             leadingIcon = {
@@ -262,8 +376,8 @@ fun AddEditNoteScreen(
                             },
                             onClick = {
                                 // close dropdown
-                                showDialog.value = true
-//                                dropdownMenuExpanded.value = false
+                                showDeleteNoteDialog.value = true
+                                dropdownMenuExpanded.value = false
                             }
                         )
                     }
@@ -289,7 +403,8 @@ fun AddEditNoteScreen(
                 },
                 isHintVisible = titleState.isHintVisible,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.titleLarge
+                textStyle = MaterialTheme.typography.titleLarge,
+                enabled = !viewModel.deleted.value
             )
             Spacer(modifier = Modifier.height(16.dp))
             TransparentHintTextField(
@@ -303,6 +418,7 @@ fun AddEditNoteScreen(
                 },
                 isHintVisible = contentState.isHintVisible,
                 textStyle = MaterialTheme.typography.bodyLarge,
+                enabled = !viewModel.deleted.value,
                 modifier = Modifier.fillMaxHeight()
             )
         }
