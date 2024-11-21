@@ -99,6 +99,8 @@ fun NotesScreen(
     val showSearchField = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
 
+    val maxChar = 20
+
     if (showDialog.value) {
         BasicAlertDialog(
             onDismissRequest = { showDialog.value = false }
@@ -255,11 +257,17 @@ fun NotesScreen(
                             TextField(
                                 value = searchQuery.value,
                                 onValueChange = {
-                                    searchQuery.value = it
-                                    viewModel.onEvent(NotesEvent.SearchNotes(it))
+                                    if (it.length <= maxChar) {
+                                        searchQuery.value = it
+                                        viewModel.onEvent(NotesEvent.SearchNotes(it))
+                                    }
+
                                 },
                                 placeholder = { Text("Search notes") },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+
+
                             )
                         } else {
                             Text("Notes")
