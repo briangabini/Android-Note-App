@@ -1,6 +1,7 @@
 package com.bgcoding.notes.app.ui.theme
 
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -117,12 +118,12 @@ val unspecified_scheme = ColorFamily(
 
 @Composable
 fun AndroidNotesAppTheme(
-    darkTheme: Boolean = false,
-    dynamicColor: Boolean = false,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
 
-    /*val colorScheme = when {
+    val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -130,10 +131,10 @@ fun AndroidNotesAppTheme(
 
         darkTheme -> darkScheme
         else -> lightScheme
-    }*/
+    }
 
     MaterialTheme(
-        colorScheme = lightScheme,
+        colorScheme = colorScheme,
         typography = AppTypography,
         shapes = Shapes,
         content = content

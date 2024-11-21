@@ -106,10 +106,11 @@ dependencies {
     implementation(libs.text.recognition.japanese)
     implementation(libs.text.recognition.korean)
 
-    // Datasore
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.datastore.preferences.core)
+    // Datastore
+    api(libs.androidx.datastore.preferences)
+    api(libs.androidx.datastore.preferences.core)
 }
+
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")

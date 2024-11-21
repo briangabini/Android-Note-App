@@ -240,7 +240,7 @@ fun NotesScreen(
                         Text(text = "Settings", style = MaterialTheme.typography.bodyMedium, fontWeight  = FontWeight.Bold)
                     },
                     selected = false,
-                    onClick = { /*TODO*/ }
+                    onClick = { navController.navigate(Screen.SettingsScreen.route) }
                 )
             }
         }
@@ -270,7 +270,7 @@ fun NotesScreen(
 
                             )
                         } else {
-                            Text("Notes", style = MaterialTheme.typography.bodyMedium)
+                            Text("Notes", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                         }
                     },
                     navigationIcon = {

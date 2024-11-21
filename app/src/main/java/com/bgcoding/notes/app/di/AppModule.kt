@@ -1,6 +1,12 @@
 package com.bgcoding.notes.app.di
 
 import android.app.Application
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.bgcoding.notes.app.feature_note.data.data_source.NoteDatabase
 import com.bgcoding.notes.app.feature_note.data.repository.NoteRepositoryImpl
@@ -53,4 +59,18 @@ object AppModule {
             deleteAllNotesPermanently = DeleteAllNotesPermanently(repository)
         )
     }
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("settings") }
+        )
+    }
+
 }
