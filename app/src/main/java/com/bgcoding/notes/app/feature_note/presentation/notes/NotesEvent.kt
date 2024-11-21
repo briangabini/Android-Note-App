@@ -7,7 +7,8 @@ sealed class NotesEvent {
     data class Order(val noteOrder: NoteOrder): NotesEvent()
     data class DeleteNote(val note: Note): NotesEvent()
     data class SetShowDeleted(val showDeleted: Boolean) : NotesEvent()
-    data object RestoreNote: NotesEvent()
+    data object RestorePreviouslyDeletedNote: NotesEvent()
     data object ToggleOrderSection: NotesEvent()
     data object DeleteAllNotesPermanently: NotesEvent()
+    data class RestoreDeletedNote(val note: Note): NotesEvent()
 }

@@ -5,18 +5,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bgcoding.notes.app.feature_note.domain.model.InvalidNoteException
 import com.bgcoding.notes.app.feature_note.domain.model.Note
 import com.bgcoding.notes.app.feature_note.domain.use_case.NoteUseCases
 import com.bgcoding.notes.app.feature_note.domain.use_case.RetrieveMode
 import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder
-import com.bgcoding.notes.app.feature_note.domain.util.OrderType
-import com.bgcoding.notes.app.feature_note.presentation.add_edit_note.AddEditNoteViewModel.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -54,7 +48,7 @@ class NotesViewModel @Inject constructor(
                     recentlyDeletedNote = event.note
                 }
             }
-            is NotesEvent.RestoreNote -> {
+            is NotesEvent.RestorePreviouslyDeletedNote -> {
                 viewModelScope.launch {
                     noteUseCases.addNote(
                         recentlyDeletedNote?.copy(deleted = false) ?: return@launch
@@ -77,6 +71,13 @@ class NotesViewModel @Inject constructor(
             is NotesEvent.DeleteAllNotesPermanently -> {
                 viewModelScope.launch {
                     noteUseCases.deleteAllNotesPermanently()
+                }
+            }
+            is NotesEvent.RestoreDeletedNote -> {
+                viewModelScope.launch {
+                    noteUseCases.addNote(
+                        event.note.copy(deleted = false)
+                    )
                 }
             }
         }

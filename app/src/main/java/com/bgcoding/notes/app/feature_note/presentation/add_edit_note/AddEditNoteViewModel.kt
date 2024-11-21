@@ -142,6 +142,22 @@ class AddEditNoteViewModel @Inject constructor(
                     }
                 }
             }
+            is AddEditNoteEvent.RestoreNote -> {
+                if (currentNoteId == null) return
+
+                viewModelScope.launch {
+                    noteUseCases.addNote(
+                        Note(
+                            title = noteTitle.value.text,
+                            content = noteContent.value.text.trimEnd(),
+                            timestamp = System.currentTimeMillis(),
+                            id = currentNoteId,
+                            deleted = false
+                        )
+                    )
+                    _deleted.value = false
+                }
+            }
         }
     }
 

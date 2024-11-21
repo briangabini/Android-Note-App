@@ -13,5 +13,6 @@ sealed class AddEditNoteEvent {
     data class ChangeContentFocus(val focusState: FocusState): AddEditNoteEvent()
     data object SaveNote: AddEditNoteEvent()
     data class CopyContent(val clipboardManager: ClipboardManager): AddEditNoteEvent()
+    data object RestoreNote: AddEditNoteEvent()
     data object DeleteNote: AddEditNoteEvent()
 }
