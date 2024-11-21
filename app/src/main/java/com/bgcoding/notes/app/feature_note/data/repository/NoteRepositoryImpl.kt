@@ -8,8 +8,12 @@ import kotlinx.coroutines.flow.Flow
 class NoteRepositoryImpl(
     private val dao: NoteDao
 ) : NoteRepository {
-    override fun getNotes(): Flow<List<Note>> {
-        return dao.getNotes()
+    override fun getNotes(query: String?): Flow<List<Note>> {
+        return if (query.isNullOrEmpty()) {
+            dao.getNotes("")
+        } else {
+            dao.getNotes(query)
+        }
     }
 
     override suspend fun getNoteById(id: Int): Note? {

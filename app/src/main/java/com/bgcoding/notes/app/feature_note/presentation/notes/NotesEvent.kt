@@ -11,4 +11,5 @@ sealed class NotesEvent {
     data object ToggleOrderSection: NotesEvent()
     data object DeleteAllNotesPermanently: NotesEvent()
     data class RestoreDeletedNote(val note: Note): NotesEvent()
+    data class SearchNotes(val query: String): NotesEvent()
 }

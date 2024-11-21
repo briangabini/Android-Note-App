@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
 
-    fun getNotes(): Flow<List<Note>>
+    fun getNotes(query: String? = null): Flow<List<Note>>
 
     suspend fun getNoteById(id: Int): Note?
 

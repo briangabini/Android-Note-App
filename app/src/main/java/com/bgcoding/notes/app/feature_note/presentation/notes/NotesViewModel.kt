@@ -29,6 +29,8 @@ class NotesViewModel @Inject constructor(
     // use a coroutine job so that we can cancel it when needed
     private var getNotesJob: Job? = null
 
+    private var currentSearchQuery: String? = null
+
     /*init {
         getNotes(NoteOrder.Date(OrderType.Descending))
     }*/
@@ -40,7 +42,7 @@ class NotesViewModel @Inject constructor(
                     state.value.noteOrder.orderType == event.noteOrder.orderType) {     // same ordertype between the current state and the event
                     return
                 }
-                getNotes(event.noteOrder)
+                getNotes(event.noteOrder, currentSearchQuery)
             }
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
@@ -80,10 +82,14 @@ class NotesViewModel @Inject constructor(
                     )
                 }
             }
+            is NotesEvent.SearchNotes -> {
+                currentSearchQuery = event.query
+                getNotes(state.value.noteOrder, event.query)
+            }
         }
     }
 
-    private fun getNotes(noteOrder: NoteOrder) {
+    private fun getNotes(noteOrder: NoteOrder, query: String? = null) {
         getNotesJob?.cancel()
         Log.d("NotesViewModel", "getNotes Executed")
         Log.d("NotesViewModel", "from state showDeleted: ${_state.value.showDeleted}")
@@ -95,7 +101,7 @@ class NotesViewModel @Inject constructor(
         Log.d("NotesViewModel", "getNotes called")
         Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
 
-        getNotesJob = noteUseCases.getNotes(noteOrder, retrieveMode).onEach { notes ->
+        getNotesJob = noteUseCases.getNotes(noteOrder, retrieveMode, query).onEach { notes ->
             _state.value = state.value.copy(notes = notes, noteOrder = noteOrder)
             Log.d("NotesViewModel", "getNotesJob executed")
             Log.d("NotesViewModel", "retrieveMode: $retrieveMode")

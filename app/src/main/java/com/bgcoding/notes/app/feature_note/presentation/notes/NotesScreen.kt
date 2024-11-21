@@ -52,6 +52,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -94,7 +95,8 @@ fun NotesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()    // scoped to the composable
-
+    val searchQuery = remember { mutableStateOf("") }
+    val showSearchField = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
 
     if (showDialog.value) {
@@ -249,7 +251,19 @@ fun NotesScreen(
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text("Notes")
+                        if (showSearchField.value) {
+                            TextField(
+                                value = searchQuery.value,
+                                onValueChange = {
+                                    searchQuery.value = it
+                                    viewModel.onEvent(NotesEvent.SearchNotes(it))
+                                },
+                                placeholder = { Text("Search notes") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            Text("Notes")
+                        }
                     },
                     navigationIcon = {
                         IconButton(
@@ -279,7 +293,7 @@ fun NotesScreen(
                         }
                         IconButton(
                             onClick = {
-                                // TODO: implement search functionality
+                                showSearchField.value = !showSearchField.value
                             }
                         ) {
                             Icon(

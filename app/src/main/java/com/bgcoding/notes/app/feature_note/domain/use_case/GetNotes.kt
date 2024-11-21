@@ -22,11 +22,12 @@ class GetNotes(
 
     operator fun invoke(
         noteOrder: NoteOrder = NoteOrder.Date(OrderType.Descending),
-        mode: RetrieveMode = RetrieveMode.ShowNonDeleted
+        mode: RetrieveMode = RetrieveMode.ShowNonDeleted,
+        query: String? = null
     ): Flow<List<Note>> {
 
         val notesFlow = repository
-            .getNotes()
+            .getNotes(query)
             .map { notes ->
                 val filteredNotes = when(mode) {
                     RetrieveMode.ShowNonDeleted -> notes.filter { !it.deleted }
