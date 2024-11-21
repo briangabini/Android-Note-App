@@ -263,14 +263,14 @@ fun NotesScreen(
                                     }
 
                                 },
-                                placeholder = { Text("Search notes") },
+                                placeholder = { Text("Search notes", style = MaterialTheme.typography.bodyMedium) },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
 
 
                             )
                         } else {
-                            Text("Notes")
+                            Text("Notes", style = MaterialTheme.typography.bodyMedium)
                         }
                     },
                     navigationIcon = {
