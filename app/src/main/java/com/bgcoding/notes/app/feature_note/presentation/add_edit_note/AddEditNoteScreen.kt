@@ -1,6 +1,7 @@
 package com.bgcoding.notes.app.feature_note.presentation.add_edit_note
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
@@ -78,6 +80,8 @@ fun AddEditNoteScreen(
 
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val showDialog = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -232,13 +236,20 @@ fun AddEditNoteScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Share,
-                                    contentDescription = "Copy note"
+                                    contentDescription = "Share note"
                                 )
                             },
                             onClick = {
                                 // close dropdown
                                 dropdownMenuExpanded.value = false
-                            }                                    // TODO: implement share content
+                                // create an implicit intent to share the note
+                                val intent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, "${titleState.text}\n${contentState.text}")
+                                }
+                                val chooser = Intent.createChooser(intent, "Share Note")
+                                context.startActivity(chooser)
+                            }
                         )
                         HorizontalDivider(thickness = 1.dp)
                         DropdownMenuItem(
