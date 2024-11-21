@@ -198,7 +198,7 @@ fun AddEditNoteScreen(
                         Text(
                             text = "Delete Note",
                             style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
                             textAlign = TextAlign.Center
                         )
                         Text(
@@ -292,13 +292,14 @@ fun AddEditNoteScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate("camera_screen")
+                            if (!viewModel.deleted.value) navController.navigate("camera_screen")
                         }
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = "Open camera"
-                        )
+                        if (!viewModel.deleted.value)
+                            Icon(
+                                imageVector = Icons.Filled.CameraAlt,
+                                contentDescription = "Open camera"
+                            )
                     }
                     IconButton(
                         onClick = {
@@ -402,7 +403,8 @@ fun AddEditNoteScreen(
                 },
                 isHintVisible = titleState.isHintVisible,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.titleLarge
+                textStyle = MaterialTheme.typography.titleLarge,
+                enabled = !viewModel.deleted.value
             )
             Spacer(modifier = Modifier.height(16.dp))
             TransparentHintTextField(
@@ -416,6 +418,7 @@ fun AddEditNoteScreen(
                 },
                 isHintVisible = contentState.isHintVisible,
                 textStyle = MaterialTheme.typography.bodyLarge,
+                enabled = !viewModel.deleted.value,
                 modifier = Modifier.fillMaxHeight()
             )
         }
