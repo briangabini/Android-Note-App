@@ -60,6 +60,8 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,6 +76,7 @@ import androidx.navigation.NavController
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.NoteItem
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.OrderSection
 import com.bgcoding.notes.app.feature_note.presentation.util.Screen
+import com.bgcoding.notes.app.ui.theme.ThemeViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +93,7 @@ fun NotesScreen(
         viewModel.onEvent(NotesEvent.SetShowDeleted(showDeleted))
         Log.d("NotesScreen", "in LaunchedEffect showDeleted: $showDeleted")
     }
+    val showDateEnabled = viewModel.isShowDateEnabled.collectAsState()
 
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
@@ -98,7 +102,6 @@ fun NotesScreen(
     val searchQuery = remember { mutableStateOf("") }
     val showSearchField = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
-
     val maxChar = 20
 
     if (showDialog.value) {
@@ -444,7 +447,8 @@ fun NotesScreen(
                                             Screen.AddEditNoteScreen.route +
                                                     "?noteId=${note.id}"
                                         )
-                                    }
+                                    },
+                                showDate = showDateEnabled.value
                             )
                         }
 

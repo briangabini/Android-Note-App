@@ -3,6 +3,10 @@ package com.bgcoding.notes.app.feature_note.presentation.notes
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bgcoding.notes.app.feature_note.domain.model.Note
@@ -11,7 +15,10 @@ import com.bgcoding.notes.app.feature_note.domain.use_case.RetrieveMode
 import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotesViewModel @Inject constructor(
     private val noteUseCases: NoteUseCases,
+    private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
     private val _state = mutableStateOf(NotesState())
@@ -31,9 +39,23 @@ class NotesViewModel @Inject constructor(
 
     private var currentSearchQuery: String? = null
 
+
     /*init {
         getNotes(NoteOrder.Date(OrderType.Descending))
     }*/
+    private val _isShowDateEnabled = MutableStateFlow(false)
+    val isShowDateEnabled: StateFlow<Boolean> = _isShowDateEnabled
+
+    init {
+        viewModelScope.launch {
+            dataStore.data.map { preferences ->
+                preferences[booleanPreferencesKey("showDate")] ?: false
+            }.collect { isShowDate ->
+                _isShowDateEnabled.value = isShowDate
+            }
+        }
+    }
+
 
     fun onEvent(event: NotesEvent) {
         when(event) {
@@ -86,6 +108,7 @@ class NotesViewModel @Inject constructor(
                 currentSearchQuery = event.query
                 getNotes(state.value.noteOrder, event.query)
             }
+
         }
     }
 
@@ -107,5 +130,13 @@ class NotesViewModel @Inject constructor(
             Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
             Log.d("NotesViewModel", "notes: $notes")
         }.launchIn(viewModelScope)
+    }
+    fun setShowDate(isShowDate: Boolean) {
+        viewModelScope.launch {
+            dataStore.edit { preferences ->
+                preferences[booleanPreferencesKey("showDate")] = isShowDate
+            }
+            _isShowDateEnabled.value = isShowDate
+        }
     }
 }

@@ -86,7 +86,7 @@ import kotlinx.coroutines.launch
 fun SettingsScreen(navController: NavController,
                    themeViewModel: ThemeViewModel = hiltViewModel(),
                    viewModel: NotesViewModel = hiltViewModel(),
-                   dataStore: DataStore<Preferences> = hiltViewModel<ThemeViewModel>().dataStore
+                   dataStore: DataStore<Preferences> = themeViewModel.dataStore
 ) {
     // get showDeleted from navController argument
     val showDeleted = navController.currentBackStackEntry?.arguments?.getBoolean("showDeleted") ?: false
@@ -105,12 +105,12 @@ fun SettingsScreen(navController: NavController,
     // State variables for toggles
 //    val themeViewModel: ThemeViewModel = hiltViewModel()
     val isNightModeEnabled by themeViewModel.isDarkTheme.collectAsState()
-    val isShowDateEnabled = remember { mutableStateOf(false) }
+    val isShowDateEnabled by viewModel.isShowDateEnabled.collectAsState()
 
-    LaunchedEffect(dataStore) {
-        dataStore.data.map { preferences ->
-            isShowDateEnabled.value = preferences[booleanPreferencesKey("showDate")] ?: false
-        }.collect { }
+
+    LaunchedEffect(isNightModeEnabled, isShowDateEnabled) {
+        Log.d("SettingsScreen", "isNightModeEnabled: $isNightModeEnabled")
+        Log.d("SettingsScreen", "isShowDateEnabled: $isShowDateEnabled")
     }
 
     ModalNavigationDrawer(
@@ -255,9 +255,9 @@ fun SettingsScreen(navController: NavController,
                         modifier = Modifier.weight(1f)
                     )
                     Switch(
-                        checked = isShowDateEnabled.value,
+                        checked = isShowDateEnabled,
                         onCheckedChange = {
-                            isShowDateEnabled.value = it
+                            viewModel.setShowDate(it)
                             scope.launch {
                                 dataStore.edit { preferences ->
                                     preferences[booleanPreferencesKey("showDate")] = it

@@ -1,5 +1,6 @@
 package com.bgcoding.notes.app.feature_note.presentation.notes.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import com.bgcoding.notes.app.feature_note.domain.model.Note
 fun NoteItem(
     note: Note,
     modifier: Modifier = Modifier,
+    showDate: Boolean
 ) {
     Box(modifier = modifier) {
         Column(
@@ -50,6 +52,15 @@ fun NoteItem(
                     maxLines = 3,
                 )
             }
+            Log.d(showDate.toString(), "showDateeeeee")
+            if (showDate) {
+                Text(
+                    text = note.timestamp.toString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
+
     }
 }
