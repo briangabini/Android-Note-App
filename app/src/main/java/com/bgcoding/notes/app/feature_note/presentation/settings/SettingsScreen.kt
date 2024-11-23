@@ -250,7 +250,7 @@ fun SettingsScreen(navController: NavController,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Show Date of Note Created",
+                        text = "Show Timestamp of Note Created",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.weight(1f)
                     )

@@ -1,5 +1,6 @@
 package com.bgcoding.notes.app.feature_note.presentation.notes.components
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,8 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bgcoding.notes.app.feature_note.domain.model.Note
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun NoteItem(
     note: Note,
@@ -52,12 +58,41 @@ fun NoteItem(
                     maxLines = 3,
                 )
             }
-            Log.d(showDate.toString(), "showDateeeeee")
+//            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+//            formatter.timeZone = TimeZone.getTimeZone("GMT+8")
+//
+//            val dateString = formatter.format(Date(note.timestamp))
+//            if (showDate) {
+//                Text(
+//                    text = dateString,
+//                    style = MaterialTheme.typography.bodySmall,
+//                    color = MaterialTheme.colorScheme.onSurface,
+//                )
+//            }
+            val currentTime = System.currentTimeMillis()
+            val timeDifference = currentTime - note.timestamp
+
+            val dateString = when {
+                timeDifference <= 5 * 1000 -> "Just Now"
+                timeDifference > 5 * 1000 && timeDifference < 60 * 1000 -> "${timeDifference / 1000} seconds ago"
+                timeDifference < 2 * 60 * 1000 -> "a minute ago"
+                timeDifference < 60 * 60 * 1000 -> "${timeDifference / (60 * 1000)} minutes ago"
+                timeDifference < 2 * 60 * 60 * 1000 -> "an hour ago"
+                timeDifference < 24 * 60 * 60 * 1000 -> "${timeDifference / (60 * 60 * 1000)} hours ago"
+                else -> {
+                    val formatter = SimpleDateFormat("dd/MM HH:mm") // should change to shorthand month
+                    formatter.timeZone = TimeZone.getTimeZone("GMT+8")
+                    formatter.format(Date(note.timestamp))
+                }
+            }
+
             if (showDate) {
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = note.timestamp.toString(),
+                    text = dateString,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.outline,
+                    fontSize = 10.sp
                 )
             }
         }
