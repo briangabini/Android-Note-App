@@ -1,8 +1,11 @@
 # Simple Notes
 
 ## Members
-Gabini, Brian Pitallo
-Verano, Carl Matthew
+- Gabini, Brian Pitallo
+- Verano, Carl Matthew
+
+## Section
+MOBDEVE S11
 
 ## Description
 
@@ -12,7 +15,6 @@ This application is a local note-taking app designed to help users efficiently m
 - **Sorting and Filtering**: Notes can be sorted and filtered by date, title, or color, making it easier to find specific information.
 - **Search**: Users can search for notes by keywords for quick access to relevant entries.
 - **Built-in Camera with OCR**: The app includes a camera feature that allows users to capture images and extract text using Optical Character Recognition (OCR). The extracted text can be added to notes.
-- **Image Support**: Users can attach images to their notes, enhancing the app's usability for tasks like organizing visual information or creating image-based reminders.
 
 ## Additional Features
 - **Recycle Bin Management**: Deleted notes are stored temporarily in a recycle bin, giving users the option to recover or permanently delete them.
