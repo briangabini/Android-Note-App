@@ -51,32 +51,32 @@ The application is built using **Clean Architecture**, which organizes the code 
 Below are placeholders for the application's key features. Replace these placeholders with actual screenshots from the app.
 
 ### Home Screen
-![1_Homepage](https://github.com/user-attachments/assets/474185db-3c24-4422-8b87-6771f9aefbcb)
+<img src="https://github.com/user-attachments/assets/474185db-3c24-4422-8b87-6771f9aefbcb" alt="Homepage" width="300">
 
 ### Swipe-Delete Notes
-![2_SwipeDeleteHomepage](https://github.com/user-attachments/assets/1d8cdaaa-e2b4-4496-b469-2dd8f6696df4)
+<img src="https://github.com/user-attachments/assets/1d8cdaaa-e2b4-4496-b469-2dd8f6696df4" alt="Swipe-Delete Notes" width="300">
 
 ### Undo Delete Notes
-![3_UndoDelete](https://github.com/user-attachments/assets/2fae2aaa-6fff-4244-a3a5-a665c2a6e29c)
+<img src="https://github.com/user-attachments/assets/2fae2aaa-6fff-4244-a3a5-a665c2a6e29c" alt="Undo Delete Notes" width="300">
 
 ### Sorting Notes
-![4_SortNotes](https://github.com/user-attachments/assets/9601b795-43e1-4c7b-a9e3-1a5a85085e76)
+<img src="https://github.com/user-attachments/assets/9601b795-43e1-4c7b-a9e3-1a5a85085e76" alt="Sorting Notes" width="300">
 
 ### Searching Notes
-![5_SearchNotes](https://github.com/user-attachments/assets/cb7a2af1-c6b9-446f-b3d1-4d313f08141d)
+<img src="https://github.com/user-attachments/assets/cb7a2af1-c6b9-446f-b3d1-4d313f08141d" alt="Searching Notes" width="300">
 
 ### Restore Notes
-![6_RestoreNote](https://github.com/user-attachments/assets/327389a1-7466-4186-b387-cc4d4948fb2b)
+<img src="https://github.com/user-attachments/assets/327389a1-7466-4186-b387-cc4d4948fb2b" alt="Restore Notes" width="300">
 
 ### Camera with OCR
-![7_OCR_Active_Camera](https://github.com/user-attachments/assets/24ad99ce-45b1-41f6-a91e-f80e9e9e47ff)
-![8_OCR_Results](https://github.com/user-attachments/assets/6d7b8f3f-764d-4083-9da2-86e855ec519c)
-![9_OCR_Copied](https://github.com/user-attachments/assets/553532de-5b29-4c69-88e2-6f1e8a9f1b3f)
-![10_OCR_Results_Pasted](https://github.com/user-attachments/assets/2ab44104-ffee-4c8e-9406-7f60baeb229a)
+<img src="https://github.com/user-attachments/assets/24ad99ce-45b1-41f6-a91e-f80e9e9e47ff" alt="Camera with OCR (Active Camera)" width="300">
+<img src="https://github.com/user-attachments/assets/6d7b8f3f-764d-4083-9da2-86e855ec519c" alt="Camera with OCR (Results)" width="300">
+<img src="https://github.com/user-attachments/assets/553532de-5b29-4c69-88e2-6f1e8a9f1b3f" alt="Camera with OCR (Copied)" width="300">
+<img src="https://github.com/user-attachments/assets/2ab44104-ffee-4c8e-9406-7f60baeb229a" alt="Camera with OCR (Results Pasted)" width="300">
 
 
 ### Night Mode
-![11_NightMode](https://github.com/user-attachments/assets/17a15c6f-ba9d-4adc-996c-1ecb1cfe1499)
-![12_Home_NightMode](https://github.com/user-attachments/assets/db7fb622-e9d7-4c11-8fd0-5e8f79fa06c1)
+<img src="https://github.com/user-attachments/assets/17a15c6f-ba9d-4adc-996c-1ecb1cfe1499" alt="Night Mode" width="300">
+<img src="https://github.com/user-attachments/assets/db7fb622-e9d7-4c11-8fd0-5e8f79fa06c1" alt="Home (Night Mode)" width="300">
 
 
