@@ -18,6 +18,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -177,7 +179,8 @@ fun CameraScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Cameraswitch,
-                    contentDescription = "Switch camera"
+                    contentDescription = "Switch camera",
+                    tint = Color.White
                 )
             }
 
@@ -197,7 +200,8 @@ fun CameraScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Photo,
-                        contentDescription = "Open Gallery"
+                        contentDescription = "Open Gallery",
+                        tint = Color.White
                     )
                 }
                 IconButton(
@@ -211,7 +215,8 @@ fun CameraScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.PhotoCamera,
-                        contentDescription = "Take photo"
+                        contentDescription = "Take photo",
+                        tint = Color.White
                     )
                 }
             }

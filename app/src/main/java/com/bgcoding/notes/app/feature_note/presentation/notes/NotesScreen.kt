@@ -298,7 +298,11 @@ fun NotesScreen(
                                 modifier = Modifier.fillMaxWidth()
                             )
                         } else {
-                            Text("Notes", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                            if(showDeleted){
+                                Text("Bin", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                            } else {
+                                Text("Notes", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                            }
                         }
                     },
                     navigationIcon = {
