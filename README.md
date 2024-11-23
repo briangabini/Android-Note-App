@@ -40,7 +40,6 @@ The application is built using **Clean Architecture**, which organizes the code 
 1. Create, edit, and delete notes as needed.
 2. Use the sorting, filtering, and search features to organize and find notes.
 3. Utilize the camera and OCR feature to extract text from images and add it to notes.
-4. Attach images to notes for better organization or visual reminders.
 
 ## Future Improvements
 - Add support for cloud backups to synchronize notes across devices.
