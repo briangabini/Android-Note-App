@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -257,20 +258,44 @@ fun NotesScreen(
                     ),
                     title = {
                         if (showSearchField.value) {
-                            TextField(
+//                            TextField(
+//                                value = searchQuery.value,
+//                                onValueChange = {
+//                                    if (it.length <= maxChar) {
+//                                        searchQuery.value = it
+//                                        viewModel.onEvent(NotesEvent.SearchNotes(it))
+//                                    }
+//
+//                                },
+//                                placeholder = { Text("Search notes", style = MaterialTheme.typography.bodyMedium) },
+//                                modifier = Modifier.fillMaxWidth(),
+//                                singleLine = true,
+//
+//
+//                            )
+                            BasicTextField(
                                 value = searchQuery.value,
                                 onValueChange = {
                                     if (it.length <= maxChar) {
                                         searchQuery.value = it
                                         viewModel.onEvent(NotesEvent.SearchNotes(it))
                                     }
-
                                 },
-                                placeholder = { Text("Search notes", style = MaterialTheme.typography.bodyMedium) },
-                                modifier = Modifier.fillMaxWidth(),
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                                            .padding(8.dp)
+                                    ) {
+                                        if (searchQuery.value.isEmpty()) {
+                                            Text("Search notes", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+                                        }
+                                        innerTextField()
+                                    }
+                                },
                                 singleLine = true,
-
-
+                                modifier = Modifier.fillMaxWidth()
                             )
                         } else {
                             Text("Notes", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
