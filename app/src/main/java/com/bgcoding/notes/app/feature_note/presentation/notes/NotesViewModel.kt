@@ -13,6 +13,7 @@ import com.bgcoding.notes.app.feature_note.domain.model.Note
 import com.bgcoding.notes.app.feature_note.domain.use_case.NoteUseCases
 import com.bgcoding.notes.app.feature_note.domain.use_case.RetrieveMode
 import com.bgcoding.notes.app.feature_note.domain.util.NoteOrder
+import com.bgcoding.notes.app.feature_note.presentation.notes.NotesEvent.DeleteAllNotesPermanently
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,12 +38,8 @@ class NotesViewModel @Inject constructor(
     // use a coroutine job so that we can cancel it when needed
     private var getNotesJob: Job? = null
 
+    // TODO: Might have to move these to a separate viewmodel (settings)
     private var currentSearchQuery: String? = null
-
-
-    /*init {
-        getNotes(NoteOrder.Date(OrderType.Descending))
-    }*/
     private val _isShowDateEnabled = MutableStateFlow(false)
     val isShowDateEnabled: StateFlow<Boolean> = _isShowDateEnabled
 
@@ -56,81 +53,87 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-
     fun onEvent(event: NotesEvent) {
         when(event) {
-            is NotesEvent.Order -> {
-                if (state.value.noteOrder::class == event.noteOrder::class &&           // same class
-                    state.value.noteOrder.orderType == event.noteOrder.orderType) {     // same ordertype between the current state and the event
-                    return
-                }
-                getNotes(event.noteOrder, currentSearchQuery)
-            }
-            is NotesEvent.DeleteNote -> {
-                viewModelScope.launch {
-                    noteUseCases.addNote(event.note.copy(deleted = true))
-                    recentlyDeletedNote = event.note
-                }
-            }
-            is NotesEvent.RestorePreviouslyDeletedNote -> {
-                viewModelScope.launch {
-                    noteUseCases.addNote(
-                        recentlyDeletedNote?.copy(deleted = false) ?: return@launch
-                    )
-                    recentlyDeletedNote = null
-                }
-            }
-            is NotesEvent.ToggleOrderSection -> {
-                _state.value = state.value.copy(
-                    isOrderSectionVisible = !state.value.isOrderSectionVisible
-                )
-            }
-            is NotesEvent.SetShowDeleted -> {
-                _state.value = state.value.copy(showDeleted = event.showDeleted)
-                Log.d("NotesViewModel", "SetShowDeleted executed")
-                Log.d("NotesViewModel", "from event showDeleted: ${event.showDeleted}")
-                Log.d("NotesViewModel", "from state showDeleted: ${_state.value.showDeleted}")
-                getNotes(state.value.noteOrder)
-            }
-            is NotesEvent.DeleteAllNotesPermanently -> {
-                viewModelScope.launch {
-                    noteUseCases.deleteAllNotesPermanently()
-                }
-            }
-            is NotesEvent.RestoreDeletedNote -> {
-                viewModelScope.launch {
-                    noteUseCases.addNote(
-                        event.note.copy(deleted = false)
-                    )
-                }
-            }
-            is NotesEvent.SearchNotes -> {
-                currentSearchQuery = event.query
-                getNotes(state.value.noteOrder, event.query)
-            }
-
+            is NotesEvent.Order -> setOrderOfNotes(event.noteOrder);
+            is NotesEvent.MarkNoteAsDeleted -> markNoteAsDeleted(event.note);
+            is NotesEvent.RestorePreviouslyDeletedNote -> restorePreviouslyDeletedNote();
+            is NotesEvent.ToggleOrderSection -> toggleOrderSection();
+            is NotesEvent.SetShowDeleted -> setShowDeleted(event.showDeleted);
+            is DeleteAllNotesPermanently -> deleteAllNotesPermanently();
+            is NotesEvent.RestoreDeletedNote -> restoreDeletedNote(event.note);
+            is NotesEvent.SearchNotes -> searchNotes(event.query);
         }
+    }
+
+    private fun markNoteAsDeleted(note: Note) {
+        viewModelScope.launch {
+            noteUseCases.addNote(note.copy(deleted = true))
+            recentlyDeletedNote = note
+        }
+    }
+
+    private fun restorePreviouslyDeletedNote() {
+        viewModelScope.launch {
+            noteUseCases.addNote(
+                recentlyDeletedNote?.copy(deleted = false) ?: return@launch
+            )
+            recentlyDeletedNote = null
+        }
+    }
+
+    private fun toggleOrderSection() {
+        _state.value = state.value.copy(
+            isOrderSectionVisible = !state.value.isOrderSectionVisible
+        )
+    }
+
+    private fun setShowDeleted(showDeleted: Boolean) {
+        _state.value = state.value.copy(showDeleted = showDeleted)
+        getNotes(state.value.noteOrder)
+    }
+
+    private fun deleteAllNotesPermanently() {
+        viewModelScope.launch {
+            noteUseCases.deleteAllNotesPermanently()
+        }
+    }
+
+    private fun restoreDeletedNote(note: Note) {
+        viewModelScope.launch {
+            noteUseCases.addNote(
+                note.copy(deleted = false)
+            )
+        }
+    }
+
+    private fun searchNotes(query: String) {
+        currentSearchQuery = query
+        getNotes(state.value.noteOrder, query)
+    }
+
+    private fun setOrderOfNotes(noteOrder: NoteOrder) {
+        if (state.value.noteOrder::class == noteOrder::class &&           // same class
+            state.value.noteOrder.orderType == noteOrder.orderType) {     // same ordertype between the current state and the event
+            return
+        }
+        getNotes(noteOrder, currentSearchQuery)
     }
 
     private fun getNotes(noteOrder: NoteOrder, query: String? = null) {
         getNotesJob?.cancel()
-        Log.d("NotesViewModel", "getNotes Executed")
-        Log.d("NotesViewModel", "from state showDeleted: ${_state.value.showDeleted}")
         val retrieveMode = if (_state.value.showDeleted) {
             RetrieveMode.ShowDeleted
         } else {
             RetrieveMode.ShowNonDeleted
         }
-        Log.d("NotesViewModel", "getNotes called")
-        Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
 
         getNotesJob = noteUseCases.getNotes(noteOrder, retrieveMode, query).onEach { notes ->
             _state.value = state.value.copy(notes = notes, noteOrder = noteOrder)
-            Log.d("NotesViewModel", "getNotesJob executed")
-            Log.d("NotesViewModel", "retrieveMode: $retrieveMode")
-            Log.d("NotesViewModel", "notes: $notes")
         }.launchIn(viewModelScope)
     }
+
+    // TODO: Move to a separate viewmodel, possibly for settings
     fun setShowDate(isShowDate: Boolean) {
         viewModelScope.launch {
             dataStore.edit { preferences ->

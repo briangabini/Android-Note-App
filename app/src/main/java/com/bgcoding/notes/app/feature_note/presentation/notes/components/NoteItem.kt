@@ -58,17 +58,6 @@ fun NoteItem(
                     maxLines = 3,
                 )
             }
-//            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-//            formatter.timeZone = TimeZone.getTimeZone("GMT+8")
-//
-//            val dateString = formatter.format(Date(note.timestamp))
-//            if (showDate) {
-//                Text(
-//                    text = dateString,
-//                    style = MaterialTheme.typography.bodySmall,
-//                    color = MaterialTheme.colorScheme.onSurface,
-//                )
-//            }
             val currentTime = System.currentTimeMillis()
             val timeDifference = currentTime - note.timestamp
 
