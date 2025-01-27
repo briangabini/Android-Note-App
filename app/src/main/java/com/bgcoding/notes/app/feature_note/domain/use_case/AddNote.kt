@@ -10,10 +10,6 @@ private val repository: NoteRepository
 
     @Throws(IllegalArgumentException::class)
     suspend operator fun invoke(note: Note) {
-        if (note.title.isBlank()) {
-            note.title = "Untitled"
-        }
-
         repository.insertNote(note)
     }
 }

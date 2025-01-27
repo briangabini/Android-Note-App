@@ -11,6 +11,11 @@ data class Note(
     var deleted: Boolean = false,
     @PrimaryKey val id: Int? = null
 ) {
+    init {
+        if (title.isBlank()) {
+            title = "Untitled"
+        }
+    }
 }
 
 class InvalidNoteException(message: String): Exception(message)
