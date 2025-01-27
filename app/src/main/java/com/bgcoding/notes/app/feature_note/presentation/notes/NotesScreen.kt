@@ -395,7 +395,7 @@ fun NotesScreen(
                         val dismissState = rememberSwipeToDismissBoxState(
                             confirmValueChange = {
                                 if (!showDeleted && it == SwipeToDismissBoxValue.EndToStart) {
-                                    viewModel.onEvent(NotesEvent.DeleteNote(note))
+                                    viewModel.onEvent(NotesEvent.MarkNoteAsDeleted(note))
                                     scope.launch {
                                         val result = snackbarHostState
                                             .showSnackbar(
