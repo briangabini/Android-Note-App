@@ -28,36 +28,23 @@ class CameraViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(false)
     val showDialog = _showDialog.asStateFlow()
 
+    private val ocrHandler: OcrHandler = OcrHandler()
+
     fun onTakePhoto(bitmap: Bitmap) {
         _bitmaps.value += bitmap
-        recognizeText(bitmap)
+        _recognizedText.value = ocrHandler.recognizeText(bitmap)
+        handleRecognitionResult(_recognizedText.value)
     }
 
-    private fun recognizeText(bitmap: Bitmap) {
-        val image = InputImage.fromBitmap(bitmap, 0)
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
-
-        recognizer.process(image)
-            .addOnSuccessListener { visionText ->
-                val recognizedText = visionText.textBlocks.joinToString(separator = "\n") { it.text }
-                _recognizedText.value = recognizedText
-                if (recognizedText.isEmpty()) {
-                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
-                } else {
-                    _showDialog.value = true
-                }
-
-                Log.d("TextRecognition", "Recognized text: $recognizedText")
-            }
-            .addOnFailureListener { e ->
-                // Task failed with an exception
-                Log.e("TextRecognition", "Text recognition failed", e)
-            }
+    private fun handleRecognitionResult(recognizedText: String) {
+        if (recognizedText.isEmpty()) {
+            Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
+        } else {
+            _showDialog.value = true
+        }
     }
 
     fun dismissDialog() {
         _showDialog.value = false
     }
-
-    fun getContext(): Context = context
 }
