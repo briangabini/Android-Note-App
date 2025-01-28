@@ -38,20 +38,20 @@ class NotesViewModel @Inject constructor(
     // use a coroutine job so that we can cancel it when needed
     private var getNotesJob: Job? = null
 
-    // TODO: Might have to move these to a separate viewmodel (settings)
     private var currentSearchQuery: String? = null
-    private val _isShowDateEnabled = MutableStateFlow(false)
-    val isShowDateEnabled: StateFlow<Boolean> = _isShowDateEnabled
 
-    init {
-        viewModelScope.launch {
-            dataStore.data.map { preferences ->
-                preferences[booleanPreferencesKey("showDate")] ?: false
-            }.collect { isShowDate ->
-                _isShowDateEnabled.value = isShowDate
-            }
-        }
-    }
+//    private val _isShowDateEnabled = MutableStateFlow(false)
+//    val isShowDateEnabled: StateFlow<Boolean> = _isShowDateEnabled
+//
+//    init {
+//        viewModelScope.launch {
+//            dataStore.data.map { preferences ->
+//                preferences[booleanPreferencesKey("showDate")] ?: false
+//            }.collect { isShowDate ->
+//                _isShowDateEnabled.value = isShowDate
+//            }
+//        }
+//    }
 
     fun onEvent(event: NotesEvent) {
         when(event) {
@@ -131,15 +131,5 @@ class NotesViewModel @Inject constructor(
         getNotesJob = noteUseCases.getNotes(noteOrder, retrieveMode, query).onEach { notes ->
             _state.value = state.value.copy(notes = notes, noteOrder = noteOrder)
         }.launchIn(viewModelScope)
-    }
-
-    // TODO: Move to a separate viewmodel, possibly for settings
-    fun setShowDate(isShowDate: Boolean) {
-        viewModelScope.launch {
-            dataStore.edit { preferences ->
-                preferences[booleanPreferencesKey("showDate")] = isShowDate
-            }
-            _isShowDateEnabled.value = isShowDate
-        }
     }
 }

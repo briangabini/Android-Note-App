@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +51,7 @@ import com.bgcoding.notes.app.feature_note.presentation.notes.components.AppDraw
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.DeleteBinDialog
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.NotesList
 import com.bgcoding.notes.app.feature_note.presentation.notes.components.OrderSection
+import com.bgcoding.notes.app.feature_note.presentation.settings.SettingsViewModel
 import com.bgcoding.notes.app.feature_note.presentation.util.Screen
 import kotlinx.coroutines.launch
 
@@ -58,6 +60,7 @@ import kotlinx.coroutines.launch
 fun NotesScreen(
     navController: NavController,
     viewModel: NotesViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
 
     // get showDeleted from navController argument
@@ -67,7 +70,9 @@ fun NotesScreen(
         viewModel.onEvent(NotesEvent.SetShowDeleted(showDeleted))
         Log.d("NotesScreen", "in LaunchedEffect showDeleted: $showDeleted")
     }
-    val showDateEnabled = viewModel.isShowDateEnabled.collectAsState()
+
+    val showDateEnabled by settingsViewModel.isShowDateEnabled.collectAsState()
+    Log.d("SHOW DATE ENABLED", showDateEnabled.toString())
 
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
@@ -230,7 +235,7 @@ fun NotesScreen(
                     viewModel = viewModel,
                     scope = scope,
                     snackbarHostState = snackbarHostState,
-                    showDateEnabled = showDateEnabled.value,
+                    showDateEnabled = showDateEnabled,
                     navController = navController
                 )
             }

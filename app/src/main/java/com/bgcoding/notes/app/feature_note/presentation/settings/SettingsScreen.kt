@@ -1,30 +1,17 @@
 package com.bgcoding.notes.app.feature_note.presentation.settings
 
-import android.app.Application
-import android.content.Context
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -37,25 +24,20 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -63,20 +45,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.bgcoding.notes.app.di.AppModule
 import com.bgcoding.notes.app.feature_note.presentation.notes.NotesEvent
 import com.bgcoding.notes.app.feature_note.presentation.notes.NotesViewModel
-import com.bgcoding.notes.app.feature_note.presentation.notes.components.OrderSection
 import com.bgcoding.notes.app.feature_note.presentation.util.Screen
-import com.bgcoding.notes.app.ui.theme.ThemeViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.map
 
 import kotlinx.coroutines.launch
 
@@ -84,9 +57,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController,
-                   themeViewModel: ThemeViewModel = hiltViewModel(),
+                   settingsViewModel: SettingsViewModel = hiltViewModel(),
                    viewModel: NotesViewModel = hiltViewModel(),
-                   dataStore: DataStore<Preferences> = themeViewModel.dataStore
+                   dataStore: DataStore<Preferences> = settingsViewModel.dataStore
 ) {
     // get showDeleted from navController argument
     val showDeleted = navController.currentBackStackEntry?.arguments?.getBoolean("showDeleted") ?: false
@@ -96,16 +69,13 @@ fun SettingsScreen(navController: NavController,
         Log.d("NotesScreen", "in LaunchedEffect showDeleted: $showDeleted")
     }
 
-    val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()    // scoped to the composable
-    val showDialog = remember { mutableStateOf(false) }
 
     // State variables for toggles
-//    val themeViewModel: ThemeViewModel = hiltViewModel()
-    val isNightModeEnabled by themeViewModel.isDarkTheme.collectAsState()
-    val isShowDateEnabled by viewModel.isShowDateEnabled.collectAsState()
+    val isNightModeEnabled by settingsViewModel.isDarkTheme.collectAsState()
+    val isShowDateEnabled by settingsViewModel.isShowDateEnabled.collectAsState()
 
 
     LaunchedEffect(isNightModeEnabled, isShowDateEnabled) {
@@ -232,12 +202,7 @@ fun SettingsScreen(navController: NavController,
                     Switch(
                         checked = isNightModeEnabled,
                         onCheckedChange = {
-                            themeViewModel.toggleTheme(it)
-                            scope.launch {
-                                dataStore.edit { preferences ->
-                                    preferences[booleanPreferencesKey("nightMode")] = it
-                                }
-                            }
+                            settingsViewModel.onEvent(SettingsEvent.ToggleNightMode(it))
                         }
                     )
                 }
@@ -257,12 +222,7 @@ fun SettingsScreen(navController: NavController,
                     Switch(
                         checked = isShowDateEnabled,
                         onCheckedChange = {
-                            viewModel.setShowDate(it)
-                            scope.launch {
-                                dataStore.edit { preferences ->
-                                    preferences[booleanPreferencesKey("showDate")] = it
-                                }
-                            }
+                            settingsViewModel.onEvent(SettingsEvent.SetShowNoteModifyDates(it))
                         }
                     )
                 }

@@ -5,10 +5,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -22,7 +20,7 @@ import com.bgcoding.notes.app.feature_note.presentation.ocr.CameraScreen
 import com.bgcoding.notes.app.feature_note.presentation.settings.SettingsScreen
 import com.bgcoding.notes.app.feature_note.presentation.util.Screen
 import com.bgcoding.notes.app.ui.theme.AndroidNotesAppTheme
-import com.bgcoding.notes.app.ui.theme.ThemeViewModel
+import com.bgcoding.notes.app.feature_note.presentation.settings.SettingsViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,8 +36,8 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val themeViewModel: ThemeViewModel = hiltViewModel()
-            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
             AndroidNotesAppTheme(darkTheme = isDarkTheme) {
                 Surface(
                     color = MaterialTheme.colorScheme.surface
@@ -53,7 +51,7 @@ class MainActivity : ComponentActivity() {
                             NotesScreen(navController = navController)
                         }
                         composable(route = Screen.SettingsScreen.route) {
-                            SettingsScreen(navController = navController, themeViewModel = themeViewModel)
+                            SettingsScreen(navController = navController, settingsViewModel = settingsViewModel)
                         }
                         composable(
                             route = Screen.AddEditNoteScreen.route +
